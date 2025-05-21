@@ -47,9 +47,16 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	title := "Title first"
+	content := "content content content content content"
+	expires := 7
 
-	w.WriteHeader(http.StatusCreated)
+	id, err := app.snippets.Insert(title, content, expires)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
 
-	w.Write([]byte("Save a new snippet..."))
+	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", id), http.StatusSeeOther)
 
 }
